@@ -15,7 +15,18 @@ const getUser = async (req, res) => {
   res.status(200).json({ user })
 }
 
-const updateUser = async (req, res) => {}
+const updateUser = async (req, res) => {
+  const { id } = req.params
+  const user = await User.findOneAndUpdate({ id }, req.body, {
+    new: true,
+    runValidators: true,
+  })
+
+  if (!user) {
+    res.status(404).json(`user with id ${id} does not exit`)
+  }
+  res.status(200).json(`user with id ${id} updated`)
+}
 
 const deleteUser = async (req, res) => {}
 
