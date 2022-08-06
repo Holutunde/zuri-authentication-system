@@ -16,14 +16,37 @@ const getStaff = async (req, res) => {
   const staff = await User.findOne({ _id: id, role: 'staff' })
 
   if (!staff) {
-    res.status(404).json(`manager with id ${id} does not exit`)
+    res.status(404).json(`staff with id: ${id} does not exit`)
   }
   res.status(200).json({ staffDetails: staff })
 }
 
-const updateStaff = async (req, res) => {}
+const updateStaff = async (req, res) => {
+  const { id } = req.params
+  const staff = await User.findOneAndUpdate(
+    { _id: id, role: 'staff' },
+    req.body,
+    {
+      new: true,
+      runValidators: true,
+    },
+  )
 
-const deleteStaff = async (req, res) => {}
+  if (!staff) {
+    res.status(404).json(`staff with id: ${id} does not exit`)
+  }
+  res.status(200).json({ updatedDetails: staff })
+}
+
+const deleteStaff = async (req, res) => {
+  const { id } = req.params
+  const staff = await User.findOneAndDelete({ _id: id, role: 'staff' })
+
+  if (!staff) {
+    res.status(404).json(`staff with id ${id} does not exit`)
+  }
+  res.status(200).json(`staff with id: ${id} deleted`)
+}
 
 module.exports = {
   createStaff,
