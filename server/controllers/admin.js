@@ -5,7 +5,15 @@ const getAllUsers = async (req, res) => {
   res.status(200).json({ allUser: users })
 }
 
-const getUser = async (req, res) => {}
+const getUser = async (req, res) => {
+  const { id } = req.params
+  const user = await User.findById(id)
+
+  if (!user) {
+    res.status(404).json(`user with id ${id} does not exit`)
+  }
+  res.status(200).json({ user })
+}
 
 const updateUser = async (req, res) => {}
 
