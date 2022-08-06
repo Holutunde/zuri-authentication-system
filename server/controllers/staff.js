@@ -3,7 +3,7 @@ const User = require('../models/userSchema')
 const createStaff = async (req, res) => {
   const staff = await User.create({ ...req.body, role: 'staff' })
 
-  res.status(201).json(`${staff.username} is added as the new staff`)
+  res.status(201).json({ staff })
 }
 
 const getAllStaffs = async (req, res) => {
