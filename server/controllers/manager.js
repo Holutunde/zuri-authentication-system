@@ -6,11 +6,14 @@ const createManager = async (req, res) => {
   res.status(201).json({ manager })
 }
 
-const getAllManagers = async (req, res) => {}
+const getAllManagers = async (req, res) => {
+  const users = await User.find({ role: 'manager' }).sort('createdAt')
+  res.status(200).json({ allUser: users })
+}
 
 const getManager = async (req, res) => {
   const { id } = req.params
-  const manager = await User.findById(id)
+  const manager = await User.findOne({ _id: id, role: 'manager' })
 
   if (!manager) {
     res.status(404).json(`manager with id ${id} does not exit`)
@@ -18,9 +21,32 @@ const getManager = async (req, res) => {
   res.status(200).json({ manager })
 }
 
-const updateManager = async (req, res) => {}
+const updateManager = async (req, res) => {
+  const { id } = req.params
+  const manager = await User.findOneAndUpdate(
+    { _id: id, role: 'manager' },
+    req.body,
+    {
+      new: true,
+      runValidators: true,
+    },
+  )
 
-const deleteManager = async (req, res) => {}
+  if (!manager) {
+    res.status(404).json(`manager with id ${id} does not exit`)
+  }
+  res.status(200).json({ manager })
+}
+
+const deleteManager = async (req, res) => {
+  const { id } = req.params
+  const manager = await User.findOneAndDelete({ _id: id, role: 'manager' })
+
+  if (!manager) {
+    res.status(404).json(`manager with id ${id} does not exit`)
+  }
+  res.status(200).json(`manager with id ${id} deleted`)
+}
 
 module.exports = {
   createManager,

@@ -1,0 +1,15 @@
+{
+    "terminal.integrated.allowChords": false,
+    "terminal.integrated.altClickMovesCursor": false,
+    "terminal.integrated.cursorBlinking": false,
+    "terminal.integrated.cursorWidth": 1,
+    "terminal.integrated.customGlyphs": false,
+    "terminal.integrated.cursorStyle": "line",
+    "terminal.integrated.localEchoLatencyThreshold": 1,
+    "terminal.integrated.localEchoExcludePrograms": [
+        "vi",
+        "nano",
+        "tmux"
+    ],
+    "terminal.integrated.localEchoEnabled": "on"
+}
