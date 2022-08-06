@@ -11,11 +11,13 @@ const errorHandler = require('./middleware/errorHandler')
 // routes
 const admins = require('./server/routes/admins')
 const auth = require('./server/routes/auth')
+const manager = require('./server/routes/managers')
 
 app.use(express.json())
 
 app.use('/auth/admin', admins)
 app.use('/auth', auth)
+app.use('/auth/manager', manager)
 
 app.use(notFound)
 app.use(errorHandler)
