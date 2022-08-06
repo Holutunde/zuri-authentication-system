@@ -28,7 +28,15 @@ const updateUser = async (req, res) => {
   res.status(200).json(`user with id ${id} updated`)
 }
 
-const deleteUser = async (req, res) => {}
+const deleteUser = async (req, res) => {
+  const { id } = req.params
+  const user = await User.findOneAndDelete(id)
+
+  if (!user) {
+    res.status(404).json(`user with id ${id} does not exit`)
+  }
+  res.status(200).json(`user with id ${id} deleted`)
+}
 
 module.exports = {
   getAllUsers,
