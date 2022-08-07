@@ -1,10 +1,13 @@
 const User = require('../models/userSchema')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 const register = async (req, res) => {
   const newUser = await User.create({ ...req.body })
   const newToken = newUser.createWebToken()
-  res.status(200).json({ user: { name: newUser.username }, newToken })
+  res
+    .status(200)
+    .json({ user: `username: ${newUser.username} has registered`, newToken })
 }
 
 const login = async (req, res) => {
@@ -29,7 +32,42 @@ const login = async (req, res) => {
   })
 }
 
+const forgotPassword = async (req, res) => {
+  const { email } = req.body
+  const user = await User.findOne({ email })
+  if (!user) {
+    return res.status(400).json(`user with this ${user} not found`)
+  }
+  const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_LIFETIME,
+  })
+  if (!token) {
+    return res.status(401).json('token cannot be verified')
+  }
+  res.status(200).json(token)
+}
+
+const changePassword = async (req, res) => {
+  const { newpassword, confirmpassword, token } = req.body
+
+  try {
+    if (newpassword != confirmpassword) {
+      return res.status(400).send('both passwords are not the same')
+    }
+    const { email } = jwt.verify(token, process.env.JWT_SECRET)
+    console.log(email)
+    const user = await User.findOne({ email })
+    user.password = newpassword
+    user.save()
+    res.status(200).send('password changed')
+  } catch (err) {
+    return res.status(401).send('Invalid Token')
+  }
+}
+
 module.exports = {
   register,
   login,
+  forgotPassword,
+  changePassword,
 }
