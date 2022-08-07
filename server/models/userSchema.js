@@ -59,7 +59,7 @@ UserSchema.pre('save', async function () {
 //generate token function with the schema instance method
 UserSchema.methods.createWebToken = function () {
   return jwt.sign(
-    { userId: this._id, username: this.name, role: this.role },
+    { userId: this._id, username: this.username, role: this.role },
     process.env.JWT_SECRET,
     {
       expiresIn: process.env.JWT_LIFETIME,

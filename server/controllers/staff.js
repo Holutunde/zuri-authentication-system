@@ -8,7 +8,7 @@ const createStaff = async (req, res) => {
 
 const getAllStaffs = async (req, res) => {
   const staffs = await User.find({})
-  res.status(200).json(`there are ${staffs.length} staff in the company`)
+  res.status(200).json({ allStaffs: staffs })
 }
 
 const getStaff = async (req, res) => {
@@ -43,7 +43,7 @@ const deleteStaff = async (req, res) => {
   const staff = await User.findOneAndDelete({ _id: id, role: 'staff' })
 
   if (!staff) {
-    res.status(404).json(`staff with id ${id} does not exit`)
+    res.status(404).json(`staff with id: ${id} does not exit`)
   }
   res.status(200).json(`staff with id: ${id} deleted`)
 }
