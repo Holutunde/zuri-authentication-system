@@ -17,12 +17,12 @@ const login = async (req, res) => {
   }
   const getUser = await User.findOne({ email })
   if (!getUser) {
-    return res.status(401).json('Invalid Credentials')
+    return res.status(401).json('invalid email')
   }
 
   const samePassword = await getUser.confirmPassword(password)
   if (!samePassword) {
-    return res.status(401).json('Invalid Credentials')
+    return res.status(401).json('invalid password')
   }
 
   const userToken = getUser.createWebToken()
@@ -52,7 +52,7 @@ const changePassword = async (req, res) => {
 
   try {
     if (newpassword != confirmpassword) {
-      return res.status(400).send('both passwords are not the same')
+      return res.status(400).json('both passwords are not the same')
     }
     const { email } = jwt.verify(token, process.env.JWT_SECRET)
     console.log(email)
@@ -61,7 +61,23 @@ const changePassword = async (req, res) => {
     user.save()
     res.status(200).send('password changed')
   } catch (err) {
-    return res.status(401).send('Invalid Token')
+    return res.status(401).json('invalid Token')
+  }
+}
+
+const logout = async (req, res) => {
+  if (req.headers && req.headers.authorization) {
+    const token = req.headers.authorization.split(' ')[1]
+    if (!token) {
+      return res.status(401).json('authorization fail')
+    }
+
+    const tokens = req.user.tokens
+
+    const newTokens = tokens.filter((t) => t.token !== token)
+
+    await User.findByIdAndUpdate(req.user._id, { tokens: newTokens })
+    res.json({ success: true, message: 'Sign out successfully!' })
   }
 }
 
@@ -70,4 +86,5 @@ module.exports = {
   login,
   forgotPassword,
   changePassword,
+  logout,
 }
