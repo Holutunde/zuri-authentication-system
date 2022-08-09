@@ -7,7 +7,12 @@ const app = express()
 const connectDB = require('./database/db')
 const notFound = require('./middleware/notFound')
 const errorHandler = require('./middleware/errorHandler')
-const { authMid } = require('./middleware/authentication')
+const {
+  authMid,
+  staffMid,
+  adminMid,
+  managerMid,
+} = require('./middleware/authentication')
 
 // routes
 const admins = require('./server/routes/admins')
@@ -17,10 +22,10 @@ const staff = require('./server/routes/staffs')
 
 app.use(express.json())
 
-app.use('/auth/admin', authMid, admins)
+app.use('/auth/admin', adminMid, admins)
 app.use('/auth', auth)
-app.use('/auth/manager', authMid, manager)
-app.use('/auth/staff', authMid, staff)
+app.use('/auth/manager', managerMid, manager)
+app.use('/auth/staff', staffMid, staff)
 
 app.use(notFound)
 app.use(errorHandler)

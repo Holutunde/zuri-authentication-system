@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 const register = async (req, res) => {
   const newUser = await User.create({ ...req.body })
   const newToken = newUser.createWebToken()
+  res.cookie('jwt', newToken, { httpOnly: true, maxAge: maxAge * 10000 })
   res
     .status(200)
     .json({ user: `username: ${newUser.username} has registered`, newToken })
@@ -26,6 +27,7 @@ const login = async (req, res) => {
   }
 
   const userToken = getUser.createWebToken()
+
   res.status(200).json({
     user: `username: ${getUser.username} has logged in`,
     userToken,
@@ -66,19 +68,8 @@ const changePassword = async (req, res) => {
 }
 
 const logout = async (req, res) => {
-  if (req.headers && req.headers.authorization) {
-    const token = req.headers.authorization.split(' ')[1]
-    if (!token) {
-      return res.status(401).json('authorization fail')
-    }
-
-    const tokens = req.user.tokens
-
-    const newTokens = tokens.filter((t) => t.token !== token)
-
-    await User.findByIdAndUpdate(req.user._id, { tokens: newTokens })
-    res.json({ success: true, message: 'Sign out successfully!' })
-  }
+  res.cookie('jwt', '', { maxAge: 100 })
+  res.status(200).json('successfuly logged out')
 }
 
 module.exports = {

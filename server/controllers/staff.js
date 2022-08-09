@@ -7,7 +7,7 @@ const createStaff = async (req, res) => {
 }
 
 const getAllStaffs = async (req, res) => {
-  const staffs = await User.find({})
+  const staffs = await User.find({ role: 'staff' })
   res.status(200).json({ allStaffs: staffs })
 }
 
