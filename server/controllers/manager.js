@@ -1,16 +1,14 @@
 const User = require('../models/userSchema')
 
-const createManager = async (req, res) => {
-  const manager = await User.create({ ...req.body, role: 'manager' })
-
-  res.status(201).json({ manager })
-}
-
+//manager: show all managers available
 const getAllManagers = async (req, res) => {
   const managers = await User.find({ role: 'manager' }).sort('createdAt')
-  res.status(200).json({ allManager: managers })
+  res
+    .status(200)
+    .json({ msg: `total number of managers: ${managers.length}`, managers })
 }
 
+//manager: view a manager details
 const getManager = async (req, res) => {
   const { id } = req.params
   const manager = await User.findOne({ _id: id, role: 'manager' })
@@ -21,6 +19,7 @@ const getManager = async (req, res) => {
   res.status(200).json({ managerDetails: manager })
 }
 
+//mamager: update a manager details
 const updateManager = async (req, res) => {
   const { id } = req.params
   const manager = await User.findOneAndUpdate(
@@ -35,9 +34,9 @@ const updateManager = async (req, res) => {
   if (!manager) {
     res.status(404).json(`manager with id: ${id} does not exit`)
   }
-  res.status(200).json({ updatedDetails: manager })
+  res.status(200).json(`manager with id: ${id} updated`)
 }
-
+//manager: delete any manager from all managers
 const deleteManager = async (req, res) => {
   const { id } = req.params
   const manager = await User.findOneAndDelete({ _id: id, role: 'manager' })
@@ -49,7 +48,6 @@ const deleteManager = async (req, res) => {
 }
 
 module.exports = {
-  createManager,
   getAllManagers,
   getManager,
   updateManager,

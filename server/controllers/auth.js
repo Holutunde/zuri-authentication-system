@@ -1,7 +1,7 @@
 const User = require('../models/userSchema')
-const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
+//auth: create any user with any role with token to login
 const register = async (req, res) => {
   const newUser = await User.create({ ...req.body })
   const newToken = newUser.createWebToken()
@@ -11,6 +11,7 @@ const register = async (req, res) => {
     .json({ user: `username: ${newUser.username} has registered`, newToken })
 }
 
+//auth: user with any role can login
 const login = async (req, res) => {
   const { email, password } = req.body
   if (!email || !password) {
@@ -34,6 +35,7 @@ const login = async (req, res) => {
   })
 }
 
+//auth: user can generate token with email for reset password
 const forgotPassword = async (req, res) => {
   const { email } = req.body
   const user = await User.findOne({ email })
@@ -49,6 +51,7 @@ const forgotPassword = async (req, res) => {
   res.status(200).json(token)
 }
 
+//auth: user can verify email token and create new password
 const changePassword = async (req, res) => {
   const { newpassword, confirmpassword, token } = req.body
 
@@ -57,7 +60,6 @@ const changePassword = async (req, res) => {
       return res.status(400).json('both passwords are not the same')
     }
     const { email } = jwt.verify(token, process.env.JWT_SECRET)
-    console.log(email)
     const user = await User.findOne({ email })
     user.password = newpassword
     user.save()
@@ -67,6 +69,7 @@ const changePassword = async (req, res) => {
   }
 }
 
+//auth: user can logout
 const logout = async (req, res) => {
   res.cookie('jwt', '', { maxAge: 100 })
   res.status(200).json('successfuly logged out')
