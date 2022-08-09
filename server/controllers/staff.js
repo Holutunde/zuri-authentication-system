@@ -3,7 +3,9 @@ const User = require('../models/userSchema')
 //staff: show all staffs
 const getAllStaffs = async (req, res) => {
   const staffs = await User.find({ role: 'staff' }).sort('createdAt')
-  res.status(200).json({ allStaffs: staffs })
+  res
+    .status(200)
+    .json({ msg: `total number of staffs: ${staffs.length}`, staffs })
 }
 
 //staff: view a particular staff details

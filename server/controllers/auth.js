@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 const register = async (req, res) => {
   const newUser = await User.create({ ...req.body })
   const newToken = newUser.createWebToken()
-  res.cookie('jwt', newToken, { httpOnly: true, maxAge: maxAge * 10000 })
+  res.cookie('jwt', newToken, { httpOnly: true, maxAge: 10000 })
   res
     .status(200)
     .json({ user: `username: ${newUser.username} has registered`, newToken })
@@ -48,7 +48,7 @@ const forgotPassword = async (req, res) => {
   if (!token) {
     return res.status(401).json('token cannot be verified')
   }
-  res.status(200).json(token)
+  res.status(200).json({ newpasswordToken: token })
 }
 
 //auth: user can verify email token and create new password
@@ -61,6 +61,7 @@ const changePassword = async (req, res) => {
     }
     const { email } = jwt.verify(token, process.env.JWT_SECRET)
     const user = await User.findOne({ email })
+    console.log(user)
     user.password = newpassword
     user.save()
     res.status(200).send('password changed')
@@ -71,7 +72,7 @@ const changePassword = async (req, res) => {
 
 //auth: user can logout
 const logout = async (req, res) => {
-  res.cookie('jwt', '', { maxAge: 100 })
+  res.cookie('jwt', '', { maxAge: 1000 })
   res.status(200).json('successfuly logged out')
 }
 
